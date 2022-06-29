@@ -10,6 +10,7 @@ import android.media.MediaCodecList;
 import android.media.MediaFormat;
 import android.media.MediaRecorder;
 import android.util.Log;
+import android.annotation.SuppressLint;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -93,7 +94,10 @@ public class SrsEncoder {
         }
 
         // the referent PTS for video and audio encoder.
-        mPresentTimeUs = System.nanoTime() / 1000;
+        if (mPresentTimeUs != 0) {
+            // 只设置一次，保证分辨率变化时 pts 依然递增
+            mPresentTimeUs = System.nanoTime() / 1000;
+        }
 
         // Note: the stride of resolution must be set as 16x for hard encoding with some chip like MTK
         // Since Y component is quadruple size as U and V component, the stride must be set as 32x
